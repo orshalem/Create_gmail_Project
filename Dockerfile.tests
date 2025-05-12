@@ -1,0 +1,27 @@
+FROM gcc:13
+
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    cmake \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /server
+
+# Copy the entire project
+COPY . .
+
+# Create build directory
+RUN mkdir -p build
+WORKDIR /server/build
+
+RUN rm -rf /server/build/*
+
+# Build the project
+RUN cmake .. && make tests
+
+WORKDIR /server
+
+# Command to run the tests
+CMD ["./build/tests"]
